@@ -1,0 +1,122 @@
+local new = loadstring(game:HttpGet("https://raw.githubusercontent.com/w1zlm/Guis/main/LaserGui") .. "return new")()
+
+local menu = new(Color3.new(1, 0, 0), 1, 2)
+
+local playerSection = menu.NewSection("Player")
+
+local player = game:GetService("Players").LocalPlayer
+local char
+do
+	local success, result = pcall(function()
+		return player.Character
+	end)
+	if success and result then
+        char = result
+    else
+        char = nil
+    end
+end
+
+local humanoid
+do
+	local success, result = pcall(function()
+		return char.Humanoid
+	end)
+	if success and result then
+        humanoid = result
+    else
+        humanoid = nil
+    end
+end
+
+local hackedSpeed = humanoid.WalkSpeed
+
+local speedHackEnabled = false
+
+local standartSpeed
+do
+    local success, result = pcall(function()
+		return tonumber(player.PlayerGui.ScreenGui.MenuGui.Frame.Stats.Bar.Character.Frame["Player Speed"].ValueLabel.Text)
+	end)
+	if success and result then
+        standartSpeed = result
+    else
+        standartSpeed = nil
+    end
+end
+
+local movementTab = playerSection.NewTab("Movement")
+
+local speedHackSlider
+
+local speedHackButton = movementTab.AddSwitch("Speed hack", function()
+	speedHackEnabled = false
+    speedHackSlider.CanSlide = false
+    if standartSpeed then
+        humanoid.WalkSpeed = standartSpeed
+    end
+end, function()
+    speedHackEnabled = true
+    speedHackSlider.CanSlide = true
+end)
+
+speedHackSlider = movementTab.AddSlider("Speed", function(value)
+	hackedSpeed = value
+end)
+
+speedHackSlider.MinValue = 0
+speedHackSlider.MaxValue = 40
+
+speedHackSlider.CanSlide = false
+
+coroutine.wrap(function()
+    while game:GetService("RunService").RenderStepped:Wait() do
+        if speedHackEnabled and hackedSpeed then
+            humanoid.WalkSpeed = hackedSpeed
+        end
+    end
+end)()
+
+local standartJumpHeight
+do
+    local success, result = pcall(function()
+		return tonumber(player.PlayerGui.ScreenGui.MenuGui.Frame.Stats.Bar.Character.Frame["Jump Height"].ValueLabel.Text)
+	end)
+	if success and result then
+        standartJumpHeight = result
+    else
+        standartJumpHeight = nil
+    end
+end
+
+local jumpHeightSlider
+local hackedJumpHeight = standartJumpHeight
+local jumpHeightHackEnabled
+
+local jumpHeightHackButton = movementTab.AddSwitch("Jump height hack", function()
+	jumpHeightHackEnabled = false
+    jumpHeightSlider.CanSlide = false
+    if standartJumpHeight then
+        humanoid.JumpHeight = standartJumpHeight
+    end
+end, function()
+    jumpHeightHackEnabled = true
+    jumpHeightSlider.CanSlide = true
+end)
+
+jumpHeightSlider = movementTab.AddSlider("Jump height", function(value)
+	hackedJumpHeight = value
+end)
+
+jumpHeightSlider.MinValue = 0
+jumpHeightSlider.MaxValue = 25
+
+jumpHeightSlider.CanSlide = false
+
+coroutine.wrap(function()
+    while game:GetService("RunService").RenderStepped:Wait() do
+        if jumpHeightHackEnabled and hackedJumpHeight then
+            humanoid.JumpHeight = hackedJumpHeight
+        end
+    end
+end)()
